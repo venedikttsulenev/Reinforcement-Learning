@@ -24,6 +24,7 @@ iterations = 1000
 epsilon = 0.1
 tau = 0.1
 init_estimate = 0
+filename = 'graph.pdf'
 if len(sys.argv) > 1:
     bandits = int(sys.argv[1])
     if len(sys.argv) > 2:
@@ -36,13 +37,17 @@ if len(sys.argv) > 1:
                     tau = float(sys.argv[5])
                     if len(sys.argv) > 6:
                         init_estimate = float(sys.argv[6])
+                        if len(sys.argv) > 7:
+                            filename = sys.argv[7]
+
 print "bandits:", bandits
 print "arms:", arms
 print "iterations:", iterations
 print "init_estimate:", init_estimate
+print "filename: \'" + filename + '\''
 
 ##########################################################################################
-pdf = PdfPages('graph.pdf')
+pdf = PdfPages(filename)
 
 cl = time.clock()
 b = Bandit(arms)
