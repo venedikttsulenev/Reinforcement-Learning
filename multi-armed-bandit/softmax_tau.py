@@ -1,18 +1,18 @@
 #####################################################################################################
 # Usage: python softmax_tau.py <bandits> <arms> <iterations> <initial_estimate> <tau1> <tau2> <...> #
 #####################################################################################################
-# Learning curves for softmax method                                                                #
+# Learning curves for softmax method (stationary problem)                                           #
 #####################################################################################################
-from bandit import Bandit
-from actors import Softmax
+from actors import Softmax, SampleAverageStepSize
+from bandit import StationaryBanditFactory
 import sys
+import time
+import main
+import numpy as np
 import matplotlib as mpl
 mpl.use('pdf')
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.pyplot as pp
-import numpy as np
-import time
-import main
 
 #####################################################################################################
 bandits = 2000
@@ -43,8 +43,10 @@ print "output file: \'" + filename + '\''
 pdf = PdfPages(filename)
 
 cl = time.clock()
-b = Bandit(arms)
-actors = [Softmax(t, b, initial_estimate) for t in tau]
+bf = StationaryBanditFactory(arms)
+b = bf.new_bandit()
+ss = SampleAverageStepSize()
+actors = [Softmax(t, b, initial_estimate, ss) for t in tau]
 avg = main.run(actors, bandits, arms, iterations)
 x = np.arange(iterations)
 for i in range(len(avg)):

@@ -1,24 +1,23 @@
 import numpy as np
-from bandit import Bandit
 
 
-def _solve(actors, iterations, rew):
+def _solve(actors, niterations, rew):
     for j in range(len(actors)):
-        for i in range(iterations):
+        for i in range(niterations):
             rew[j][i] = actors[j].act()
 
 
-def run(actors, bandits, arms, iterations):
+def run(actors, bandit_factory, nbandits, niterations):
     l = len(actors)
-    rew = np.zeros((l, iterations))
-    avg = np.zeros((l, iterations))
-    for i in range(bandits - 1):
-        _solve(actors, iterations, rew)
+    rew = np.zeros((l, niterations))
+    avg = np.zeros((l, niterations))
+    for i in range(nbandits - 1):
+        _solve(actors, niterations, rew)
         avg += rew
-        b = Bandit(arms)
+        b = bandit_factory.new_bandit()
         for a in actors:
             a.set_bandit(b)
-    _solve(actors, iterations, rew)
+    _solve(actors, niterations, rew)
     avg += rew
-    avg /= bandits
+    avg /= nbandits
     return avg
